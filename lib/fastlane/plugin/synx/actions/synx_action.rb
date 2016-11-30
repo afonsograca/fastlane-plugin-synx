@@ -2,6 +2,8 @@ module Fastlane
   module Actions
     class SynxAction < Action
       def self.run(params)
+        require 'shellwords'
+
         Actions.verify_gem!("synx")
 
         project_name = Dir["*.xcodeproj"].first
@@ -12,9 +14,13 @@ module Fastlane
         cmd << ["--no-default-exclusions"] if params[:no_default_exclusions]
         cmd << ["--no-sort-by-name"] if params[:no_sort_by_name]
         cmd << ["--quiet"] if params[:quiet]
-        cmd << ["--exclusion #{params[:exclusion]}"] if params[:exclusion]
+        if params[:exclusion]
+          Array(params[:exclusion]).each do |exclusion|
+            cmd.concat ["--exclusion", exclusion]
+          end
+        end
         cmd << [project_name]
-        Actions.sh(cmd.join(" "))
+        Actions.sh(Shellwords.join(cmd))
       end
 
       def self.description
@@ -65,7 +71,7 @@ module Fastlane
                                        env_name: "FL_SYNX_EXCLUSION",
                                        description: "Ignore an Xcode group while syncing",
                                        optional: true,
-                                       is_string: true,
+                                       is_string: false,
                                        default_value: nil)
         ]
       end
