@@ -2,6 +2,8 @@ module Fastlane
   module Actions
     class SynxAction < Action
       def self.run(params)
+        require 'shellwords'
+
         Actions.verify_gem!("synx")
 
         project_name = Dir["*.xcodeproj"].first
@@ -17,7 +19,7 @@ module Fastlane
             cmd << ["--exclusion #{exclusion}"] }
         end
         cmd << [project_name]
-        Actions.sh(cmd.join(" "))
+        Actions.sh(Shellwords.join(cmd))
       end
 
       def self.description
