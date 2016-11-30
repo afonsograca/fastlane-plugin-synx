@@ -16,7 +16,7 @@ module Fastlane
         cmd << ["--quiet"] if params[:quiet]
         if params[:exclusion]
           Array(params[:exclusion]).each {|exclusion|
-            cmd << ["--exclusion #{exclusion}"] }
+            cmd.concat ["--exclusion", exclusion] }
         end
         cmd << [project_name]
         Actions.sh(Shellwords.join(cmd))
