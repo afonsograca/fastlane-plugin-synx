@@ -8,18 +8,18 @@ module Fastlane
 
         project_name = Dir["*.xcodeproj"].first
         cmd = []
-        cmd << ["synx"]
-        cmd << ["--prune"] if params[:prune]
-        cmd << ["--no-color"] if params[:no_color]
-        cmd << ["--no-default-exclusions"] if params[:no_default_exclusions]
-        cmd << ["--no-sort-by-name"] if params[:no_sort_by_name]
-        cmd << ["--quiet"] if params[:quiet]
+        cmd << "synx"
+        cmd << "--prune" if params[:prune]
+        cmd << "--no-color" if params[:no_color]
+        cmd << "--no-default-exclusions" if params[:no_default_exclusions]
+        cmd << "--no-sort-by-name" if params[:no_sort_by_name]
+        cmd << "--quiet" if params[:quiet]
         if params[:exclusion]
           Array(params[:exclusion]).each do |exclusion|
             cmd.concat ["--exclusion", exclusion]
           end
         end
-        cmd << [project_name]
+        cmd << project_name
         Actions.sh(Shellwords.join(cmd))
       end
 
@@ -30,7 +30,7 @@ module Fastlane
       def self.details
         "A command-line tool that reorganizes your Xcode project folder to match your Xcode groups."
       end
-      
+
       def self.authors
         ["@afonsograca/@AfonsoGraca"]
       end
