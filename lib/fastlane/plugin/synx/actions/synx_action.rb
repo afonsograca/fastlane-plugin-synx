@@ -6,7 +6,8 @@ module Fastlane
 
         Actions.verify_gem!("synx")
 
-        project_name = Dir["*.xcodeproj"].first
+        project_path = params[:xcodeproj]
+        project_path ||= Dir["*.xcodeproj"].first
         cmd = []
         cmd << "synx"
         cmd << "--prune" if params[:prune]
@@ -19,7 +20,7 @@ module Fastlane
             cmd.concat ["--exclusion", exclusion]
           end
         end
-        cmd << project_name
+        cmd << project_path
         Actions.sh(Shellwords.join(cmd))
       end
 
@@ -37,6 +38,12 @@ module Fastlane
 
       def self.available_options
         [
+          FastlaneCore::ConfigItem.new(key: :xcodeproj,
+                                       env_name: "FL_SYNX_PROJECT",
+                                       description: "Optional, you must specify the path to your main Xcode project if it is not in the project root directory",
+                                       optional: true,
+                                       is_string: true,
+                                       default_value: nil),
           FastlaneCore::ConfigItem.new(key: :prune,
                                        env_name: "FL_SYNX_PRUNE",
                                        description: "Remove source files and image resources that are not referenced by the the xcode project",
